@@ -1,21 +1,21 @@
-import express from "express";
-import { existsSync, mkdirSync, createReadStream } from "fs";
-import { join } from "path";
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const PORT = 3000;
 
-const dataFolderPath = join(__dirname, "tmp", "data");
+const dataFolderPath = path.join(__dirname, "tmp", "data");
 
-if (!existsSync(dataFolderPath)) {
-  mkdirSync(dataFolderPath, { recursive: true });
+if (!fs.existsSync(dataFolderPath)) {
+  fs.mkdirSync(dataFolderPath, { recursive: true });
 }
 
 app.get("/data", (req, res) => {
   const { n, m } = req.query;
 
   if (n) {
-    const filePath = join(dataFolderPath, `${n}.txt`);
+    const filePath = path.join(dataFolderPath, `${n}.txt`);
 
     if (m) {
       readSpecificLine(filePath, parseInt(m), res);
@@ -28,7 +28,7 @@ app.get("/data", (req, res) => {
 });
 
 function readSpecificLine(filePath, lineNumber, res) {
-  const stream = createReadStream(filePath);
+  const stream = fs.createReadStream(filePath);
 
   let currentLineNumber = 1;
   let content = "";
@@ -62,7 +62,7 @@ function readSpecificLine(filePath, lineNumber, res) {
 }
 
 function readEntireFile(filePath, res) {
-  const stream = createReadStream(filePath);
+  const stream = fs.createReadStream(filePath);
 
   stream.on("open", () => {
     res.status(200);

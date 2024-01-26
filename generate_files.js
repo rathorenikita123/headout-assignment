@@ -1,20 +1,20 @@
-import { existsSync, mkdirSync, createWriteStream } from "fs";
-import { join } from "path";
-import { Readable } from "stream";
+const fs = require("fs");
+const path = require("path");
+const stream = require("stream");
 
-const dataFolderPath = join(__dirname, "tmp", "data");
+const dataFolderPath = path.join(__dirname, "tmp", "data");
 const numberOfFiles = 50;
 const fileSizeInMB = 100;
 const charactersPerLine = 50;
 
-if (!existsSync(dataFolderPath)) {
-  mkdirSync(dataFolderPath, { recursive: true });
+if (!fs.existsSync(dataFolderPath)) {
+  fs.mkdirSync(dataFolderPath, { recursive: true });
 }
 
 for (let i = 1; i <= numberOfFiles; i++) {
-  const filePath = join(dataFolderPath, `${i}.txt`);
+  const filePath = path.join(dataFolderPath, `${i}.txt`);
 
-  const writeStream = createWriteStream(filePath);
+  const writeStream = fs.createWriteStream(filePath);
 
   const contentStream = generateRandomContentStream(
     fileSizeInMB,
@@ -30,7 +30,7 @@ for (let i = 1; i <= numberOfFiles; i++) {
 
 function generateRandomContentStream(sizeInMB, charactersPerLine) {
   const fileSizeInBytes = sizeInMB * 1024 * 1024;
-  const randomStream = new Readable({
+  const randomStream = new stream.Readable({
     read(size) {
       const chunkSize = Math.min(size, fileSizeInBytes);
       const randomBuffer = Buffer.alloc(chunkSize);
